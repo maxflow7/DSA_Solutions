@@ -304,6 +304,314 @@ public:
 };
 
 
+------------------------------------------------------------- Subarray Sum Equals K -----------------------------------------------------------------------------------------------------------
+
+    /*
+    https://leetcode.com/problems/subarray-sum-equals-k/description/
+
+    Key observations : As we check for the subarray sum, we check for (sum-k) same to count the number uisng map.
+
+    Complexity
+Time complexity:
+O(n)
+Space complexity:
+O(n)
+    */
+
+
+
+    class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) 
+    {
+
+        unordered_map<int, int>mp;
+
+        mp[0] = 1;
+        int sum = 0;
+        int count = 0;
+
+        for(auto &n : nums)
+        {
+            sum += n;
+
+            //count the (sum-k) using map.
+           count+= mp[sum-k];
+
+
+           mp[sum]++; 
+        }
+
+        return count;
+        
+    }
+};
+
+
+
+----------------------------------- Spiral Matrix --------------------------------------------------------------
+    /*
+    Revise during the practice : https://leetcode.com/problems/spiral-matrix/description/
+    */
+
+
+    ----------------------------- Rotate Image ---------------------------------------------------
+    /*
+    https://leetcode.com/problems/rotate-image/
+    */
+
+
+    ------------------------------------------------------- Two Sum ----------------------------------------------------------------------------------------------------
+    /*
+    https://leetcode.com/problems/two-sum/description/
+
+    Complexity  :
+
+    Time Complexity : O (n)
+    Space Complexity : O(n)
+    
+    */
+
+    class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) 
+    {
+
+        unordered_map<int,int>mp;
+        int n = nums.size();
+
+        for(int i = 0 ; i<n ; i++)
+        {
+            if(mp.find(target-nums[i]) != mp.end())
+            {
+                return {i, mp[target-nums[i]]};
+            }
+
+
+            mp[nums[i]] = i;
+        }
+       
+       return {};
+        
+    }
+};
+
+
+--------------------------------------------------------- Valid Anagram ----------------------------------------------------------------------------------------------
+    /*
+    https://leetcode.com/problems/valid-anagram/description/
+
+    Complexity Analysis
+Time complexity: O(n).
+Time complexity is O(n) because accessing the counter table is a constant time operation.
+
+Space complexity: O(1).
+Although we do use extra space, the space complexity is O(1) because the table's size stays constant no matter how large n is.
+    
+    */
+
+    class Solution {
+public:
+    bool isAnagram(string s, string t) 
+    {
+
+        if(s.length() != t.length())
+        return false;
+
+        vector<int>freq(26);
+
+        for(int i = 0 ; i<s.length() ; i++)
+        {
+            freq[s[i]-'a']++;
+            freq[t[i]-'a']--;
+        }
+
+        for(auto x : freq)
+        {
+            if(x != 0)
+            return false;
+        }
+
+        return true;
+        
+    }
+};
+
+
+
+------------------------------------------------------- Group Anagrams --------------------------------------------------------------------------------------------------------------------
+    /*
+    https://leetcode.com/problems/group-anagrams/editorial/
+
+    Complexity Analysis
+
+Time Complexity: O(NKlogK), where N is the length of strs, and K is the maximum length of a string in strs. The outer loop has complexity O(N) as we iterate through each string. Then, we sort each string in O(KlogK) time.
+
+Space Complexity: O(NK), the total information content stored in ans.
+    */
+
+    class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs)
+    {
+
+        vector<vector<string>>ans;
+
+        unordered_map<string, vector<string>>mp;
+
+        for(auto x : strs)
+        {
+            string temp = x;
+            sort(temp.begin(), temp.end());
+
+            mp[temp].push_back(x);
+        }
+
+
+        for(auto x : mp)
+        {
+
+            ans.push_back(x.second);
+        }
+
+        return ans;
+        
+    }
+};
+
+
+--------------------------------------------------------------------------- Top K Frequent Elements --------------------------------------------------------------------------------------------------------------
+
+    /*
+    https://leetcode.com/problems/top-k-frequent-elements/description/
+
+    Complexity Analysis
+
+Time complexity : O(N+Nlogk) if k<N and O(1) in the particular case of N=k. That ensures time complexity to be better than O(NlogN).
+
+Space complexity : O(N+k) to store the hash map with not more N elements and a heap with k elements.
+    */
+
+    class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k)
+    {
+
+        unordered_map<int, int>mp;
+
+        for(auto x : nums)
+        {
+            mp[x]++;
+        }
+
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int, int>>>pq;
+
+        for(auto x : mp)
+        {
+
+            pq.push({x.second, x.first});
+
+            if(pq.size()>k)
+            pq.pop();
+        }
+
+        vector<int>ans;
+
+        while(!pq.empty())
+        {
+            ans.push_back(pq.top().second);
+            pq.pop();
+        }
+
+        return ans;
+        
+    }
+};
+
+-------------------------------------------------------- Product of Array Except Self -----------------------------------------------------------------------------------------------
+    /*
+    https://leetcode.com/problems/product-of-array-except-self/description/
+
+    Complexity analysis
+
+Time complexity : O(N) where N represents the number of elements in the input array. We use one iteration to construct the array L, one to update the array answer.
+Space complexity : O(1) since don't use any additional array for our computations. The problem statement mentions that using the answer array doesn't add to the space complexity.
+    */
+
+    class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        // The length of the input array
+        int length = nums.size();
+
+        // The answer vector to be returned
+        vector<int> answer(length);
+
+        // answer[i] contains the product of all the elements to the left
+        // Note: for the element at index '0', there are no elements to the
+        // left, so answer[0] would be 1
+        answer[0] = 1;
+        for (int i = 1; i < length; i++) {
+            // answer[i - 1] already contains the product of elements to the
+            // left of 'i - 1' Simply multiplying it with nums[i - 1] would give
+            // the product of all elements to the left of index 'i'
+            answer[i] = nums[i - 1] * answer[i - 1];
+        }
+
+        // R contains the product of all the elements to the right
+        // Note: for the element at index 'length - 1', there are no elements to
+        // the right, so R would be 1
+        int R = 1;
+        for (int i = length - 1; i >= 0; i--) {
+            // For the index 'i', R would contain the
+            // product of all elements to the right. We update R accordingly
+            answer[i] = answer[i] * R;
+            R *= nums[i];
+        }
+
+        return answer;
+    }
+};
+
+
+----------------------------------------------------------------------- longest-consecutive-sequence ------------------------------------------------------------------------------------------------
+    /*
+    https://leetcode.com/problems/longest-consecutive-sequence/submissions/1920169745/
+    
+    Complexity Analysis :
+
+    Time : O(n)
+    Space : O(n)
+    
+    */
+
+    class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        int n=nums.size();
+        unordered_set<int>s;
+        for (int i=0;i<n;i++){
+            int x=nums[i];
+            s.insert(x);
+        }
+        int ans=0;
+        for (auto &x:s){
+            int len=0;
+            if (!s.count(x-1)){
+                int y=x;
+                while(s.count(y)){
+                    len++;
+                    y++;
+                }
+            }
+            ans=max(ans,len);
+        }
+        return ans;
+    }
+};
+
+
+
 
     
 
