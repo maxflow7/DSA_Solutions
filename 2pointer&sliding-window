@@ -1,0 +1,36 @@
+---------------------------------------------------- Container With Most Water -------------------------------------------------------------------------------------------
+/*
+
+https://leetcode.com/problems/container-with-most-water/description/
+
+Complexity Analysis
+
+Time complexity: O(n). Single pass.
+
+Space complexity: O(1). Constant space is used.
+
+Idea : for area as we have to find the length and width.
+Width :  we have to find the difference b/w two positions the max difference would be the first nd last index.
+Length : We keep checking for the maximum length in between to keep maximizing the area and keep updating the results.
+
+*/
+
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int maxArea = 0;
+        int left = 0;
+        int right = height.size() - 1;
+
+        while (left < right) {
+            int width = right - left;
+            maxArea = max(maxArea, min(height[left], height[right]) * width);
+            if (height[left] <= height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return maxArea;
+    }
+};
