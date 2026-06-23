@@ -585,30 +585,193 @@ public:
     
     */
 
-    class Solution {
+class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
-        int n=nums.size();
-        unordered_set<int>s;
-        for (int i=0;i<n;i++){
-            int x=nums[i];
-            s.insert(x);
-        }
-        int ans=0;
-        for (auto &x:s){
-            int len=0;
-            if (!s.count(x-1)){
-                int y=x;
-                while(s.count(y)){
-                    len++;
-                    y++;
+        unordered_set<int> numSet(nums.begin(), nums.end());
+        int longest = 0;
+
+        for (int num : numSet) {
+            if (numSet.find(num - 1) == numSet.end()) {
+                int length = 1;
+                while (numSet.find(num + length) != numSet.end()) {
+                    length++;
                 }
+                longest = max(longest, length);
             }
-            ans=max(ans,len);
         }
-        return ans;
+        return longest;
     }
 };
+
+
+-------------------------------------------------------------------- string-encode-and-decode ----------------------------------------------------------------------------------------------------------------
+    /*
+    1. https://neetcode.io/problems/string-encode-and-decode/solution
+
+    As string contains all the character, so we have to make any unique pattern to make it different.
+
+    a. encoded string ->length of all string + # + string
+    b. decoded string -> accordingly iterate.
+    
+    */
+
+    class Solution {
+public:
+
+    string encode(vector<string>& strs) 
+    {
+
+        string encoded_string="";
+
+        for(int i = 0 ; i<strs.size() ; i++)
+        {
+            encoded_string += to_string(strs[i].length());
+            encoded_string += '#';
+            encoded_string += strs[i];
+        }
+
+        return encoded_string;
+
+    }
+
+    vector<string> decode(string s) 
+    {
+
+        vector<string>ans;
+        int n = s.length();
+        int i = 0;
+
+        while(i<n)
+        {
+           int j = i;
+           while(s[j] != '#')
+           j++;
+
+           int length = stoi(s.substr(i, j-i));
+           i = j+1;
+           j = i+length;
+
+           ans.push_back(s.substr(i,length));
+           i = j;
+
+        }
+
+        return ans;
+
+    }
+};
+
+
+
+----------------------------------------------------------------- valid sudoku ----------------------------------------------------------------------------------------------------------------------------
+
+    /*
+   https://neetcode.io/problems/valid-sudoku/solution
+
+   1. traverse all the rows and columns one by one and check for the count with the data struture set.
+   
+   Time & Space Complexity
+Time complexity: O(n^2)
+
+Space complexity: O(n)
+    
+    */
+
+    class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) 
+    {
+
+        //check for the row values.
+        for(int row = 0; row<9 ; row++)
+        {
+            unordered_set<char>seen;
+
+            for(int i = 0 ; i<9 ; i++)
+            {
+                if(board[row][i] == '.')
+                continue;
+
+                if(seen.count(board[row][i]))
+                return false;
+
+                seen.insert(board[row][i]);
+            }
+        }
+
+        //check for the column values.
+        for(int col = 0 ; col < 9 ; col++)
+        {
+            unordered_set<char>seen;
+
+            for(int i = 0 ; i<9 ; i++)
+            {
+                if(board[i][col] == '.')
+                continue;
+
+                if(seen.count(board[i][col]))
+                return false;
+
+                seen.insert(board[i][col]);
+            }
+        }
+
+        //check for the square values.
+        for(int square =0 ; square<9 ; square++)
+        {
+            unordered_set<char>seen;
+
+            for(int i = 0 ; i < 3 ; i++)
+            {
+                for(int j = 0 ; j<3 ; j++)
+                {
+                    int row = (square/3)*3 + i;
+                    int col = (square%3)*3+j;
+
+                    if(board[row][col] == '.')
+                    continue;
+
+                    if(seen.count(board[row][col]))
+                    return false;
+
+                    seen.insert(board[row][col]);
+                }
+            }
+        }
+
+        return true;
+        
+    }
+};
+
+
+//Using Hash Set(One Pass)
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        unordered_map<int, unordered_set<char>> rows, cols;
+        map<pair<int, int>, unordered_set<char>> squares;
+
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] == '.') continue;
+
+                pair<int, int> squareKey = {r / 3, c / 3};
+
+                if (rows[r].count(board[r][c]) || cols[c].count(board[r][c]) || squares[squareKey].count(board[r][c])) {
+                    return false;
+                }
+
+                rows[r].insert(board[r][c]);
+                cols[c].insert(board[r][c]);
+                squares[squareKey].insert(board[r][c]);
+            }
+        }
+        return true;
+    }
+};
+
 
 
 
